@@ -26,8 +26,7 @@ our @TET_CODE_FILE=("0   PASS        Continue\n",
 	"6   UNINITIATED Continue\n",
 	"7   NORESULT    Continue\n");
 
-push @INC, "$basedir/lib/lsbappchk"; 
-require "perldeps.pl";
+require "/opt/lsb/lib/appchk/perldeps.pl";
 require "/opt/lsb-tet3-lite/lib/perl/api.pl";
 
 sub time {
@@ -107,7 +106,7 @@ sub file_info {
 }
 
 # read the list of LSB modules
-my $mlistf = "$basedir/share/lsbappchk/lsb-perl-modules.list";
+my $mlistf = "$basedir/share/appchk/lsb-perl-modules.list";
 open(MFILE, $mlistf) || die "Could not open $mlistf\n";
 
 my $line;
