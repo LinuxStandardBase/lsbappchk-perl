@@ -2,7 +2,6 @@ AnyDBM_File
 Attribute::Handlers
 AutoLoader
 AutoSplit
-B::Asmdata
 B::Concise
 B::Debug
 B::Deparse
