@@ -34,7 +34,8 @@ DBM_Filter::encode
 DBM_Filter::int32
 DBM_Filter::null
 DBM_Filter::utf8
-DB_File
+# not shipped by all distributions
+#DB_File
 Data::Dumper
 Devel::DProf
 Devel::PPPort
@@ -178,7 +179,8 @@ Memoize::ExpireTest
 Memoize::NDBM_File
 Memoize::SDBM_File
 Memoize::Storable
-NDBM_File
+# not shipped by all distributions
+#NDBM_File
 NEXT
 Net::Cmd
 Net::Config
@@ -200,7 +202,8 @@ Net::netent
 Net::protoent
 Net::servent
 O
-ODBM_File
+# not shipped by all distributions
+#ODBM_File
 Opcode
 Opcode::Safe
 Opcode::ops
