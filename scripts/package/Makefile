@@ -43,7 +43,7 @@ endif
 # The rpmrc file translates targets where there are multiple choices per
 # architecture. On build, the derived RPM_BUILD_ARCH is given as the target
 RCFILELIST="/usr/lib/rpm/rpmrc:./rpmrc"
-RPM_TMP_BUILD_DIR=/var/tmp/rpm-build
+RPM_TMP_BUILD_DIR=$(HOME)/tmp/rpm-build
 # noarch package
 #RPM_BUILD_ARCH=$(shell rpm --rcfile ${RCFILELIST} --eval=%{_target_cpu})
 #RPM_BINARY_DIR=$(RPM_TMP_BUILD_DIR)/RPMS/$(RPM_BUILD_ARCH)
