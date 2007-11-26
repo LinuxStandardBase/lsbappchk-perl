@@ -90,6 +90,13 @@ sub test_header {
   printf($JOURNAL_HANDLE "$test_ver\n");
 }
 
+sub test_footer {
+  my $time=&time;
+  &output(80, "0 $time", "TC End") if $journal;
+  $activity=$time;
+  &output(900, "", "TCC End") if $journal;
+}
+
 sub file_info {
   my ($file) = @_;
 
@@ -136,11 +143,12 @@ for my $file (grep /^[^-]/, @ARGV) {
 
     test_header();
     tet::output(10, "$file", "TC Start") if $journal;
+    &output(15, "tetj-1.0 1", "TCM Start") if $journal;
   }
 
   my $tnum = 1;
   # collect file size and md5sum as test 1
-  test_start($tum) if $journal;
+  test_start($tnum) if $journal;
   file_info($file) if $journal;
   test_result($tnum, "PASS") if $journal;
   test_end($tnum) if $journal;
@@ -165,6 +173,7 @@ for my $file (grep /^[^-]/, @ARGV) {
     }
     test_end($tnum) if $journal;
   }
+  test_footer();
   close JHNDL if $journal;
 }
 
