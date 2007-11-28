@@ -47,6 +47,12 @@ sub test_start {
   &setcontext;
 }
 
+sub tp_start {
+  my ($tnum, $message) = @_;
+  my $time=&time;
+  &output(200, "$tnum $time", "TP Start, $message");
+}
+
 sub test_end {
   my ($tnum)  = @_;
   my $time=&time;
@@ -88,6 +94,7 @@ sub test_header {
   }
   $test_ver = "30||VSX_NAME=" . $VERSION;
   printf($JOURNAL_HANDLE "$test_ver\n");
+  printf($JOURNAL_HANDLE "40||Config End\n");
 }
 
 sub test_footer {
@@ -108,8 +115,8 @@ sub file_info {
   my $md5sum = Digest::MD5->new->addfile(*FILE)->hexdigest;
   close FILE;
 
-  &output(520, "0 1 0 0 0", "FILE_SIZE $size");
-  &output(520, "0 1 0 0 0", "BINARY_MD5SUM $md5sum");
+  &output(520, "1 1 0 0", "FILE_SIZE $size");
+  &output(520, "1 0 0 0", "BINARY_MD5SUM $md5sum");
 }
 
 # read the list of LSB modules
@@ -142,13 +149,15 @@ for my $file (grep /^[^-]/, @ARGV) {
     select((select($JOURNAL_HANDLE), $|=1)[0]);
 
     test_header();
-    tet::output(10, "$file", "TC Start") if $journal;
+    my $time=&time;
+    tet::output(10, "$file $time", "TC Start") if $journal;
     &output(15, "tetj-1.0 1", "TCM Start") if $journal;
   }
 
   my $tnum = 1;
   # collect file size and md5sum as test 1
   test_start($tnum) if $journal;
+  tp_start($tnum, "File information") if $journal;
   file_info($file) if $journal;
   test_result($tnum, "PASS") if $journal;
   test_end($tnum) if $journal;
@@ -157,7 +166,7 @@ for my $file (grep /^[^-]/, @ARGV) {
     my $verbage = "is used, but is not part of LSB";
     my $value = $req->value;
     test_start($tnum) if $journal;
-    test_info($tnum, "Check $value") if $journal;
+    tp_start($tnum, "Check $value") if $journal;
     my @match = grep { /^$value/ } @mlist;
     my $found = @match;
     if ($found) {
