@@ -1,8 +1,8 @@
 # XXX We should play the usual tricks defining stuff here and building
 # XXX a specfile from this info, but not yet: for now keep in sync
-PACKAGE=lsbappchk-perl
+PACKAGE=lsb-appchk-perl
 VERSION=3.1.90
-RELEASE=1
+RELEASE=2
 
 #
 # Derive date string for daily snapshots
@@ -53,7 +53,7 @@ RPM_SRPM_DIR=$(RPM_TMP_BUILD_DIR)/SRPMS
 
 # Override this on the command line to use a different repo
 BZRTREES?=http://bzr.freestandards.org/lsb/devel
-BZR_MODULE=$(PACKAGE)
+BZR_MODULE=lsbappchk-perl
 
 # Default target
 ifndef BUILD_NO_DEB
