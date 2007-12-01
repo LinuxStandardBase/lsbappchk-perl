@@ -1,7 +1,7 @@
 %define basedir /opt/lsb
 # %{version}, %{rel} are provided by the Makefile
 Summary: LSB Perl Application Checker
-Name: lsbappchk-perl
+Name: lsb-appchk-perl
 Version: %{version}
 Release: %{rel}
 License: GPL
@@ -65,6 +65,9 @@ fi
 
 #==================================================
 %changelog
+* Sat Dec  1 2007 Mats Wichmann <mats@linux-foundation.org>
+- renamed package to lsb-appchk-perl from lsbappchk-perl (convention)
+
 * Wed Jun 20 2007 Stew Benedict <stewb@linux-foundation.org>
 - initial packaging
 
