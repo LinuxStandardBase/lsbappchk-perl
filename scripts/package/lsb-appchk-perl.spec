@@ -8,6 +8,7 @@ License: GPL
 Group: Development/Tools
 Source: %{name}-%{version}.tar.gz
 Source1: perldeps.pl
+Source2: COPYING.perldeps.pl
 Patch0: perldeps-patch-for-lsb.patch
 URL: http://www.linuxbase.org/test
 #Prefix: %{_prefix}
@@ -47,6 +48,11 @@ cat > VERSION.lsbappchk.pl << EOF
 EOF
 cp VERSION.lsbappchk.pl ${RPM_BUILD_ROOT}%{basedir}/share/appchk
 
+# License files
+install -d ${RPM_BUILD_ROOT}%{basedir}/share/doc/%{name}
+cp %{SOURCE2} ${RPM_BUILD_ROOT}%{basedir}/share/doc/%{name}
+cp source/COPYING ${RPM_BUILD_ROOT}%{basedir}/share/doc/%{name}
+
 #==================================================
 %clean
 if [ -z "${RPM_BUILD_ROOT}"  -a "${RPM_BUILD_ROOT}" != "/" ]; then 
@@ -62,9 +68,14 @@ fi
 /opt/lsb/lib/appchk/*
 %dir /opt/lsb/share/appchk
 /opt/lsb/share/appchk/*
+%dir /opt/lsb/share/doc/%{name}
+/opt/lsb/share/doc/%{name}/*
 
 #==================================================
 %changelog
+* Mon Dec 03 2007 Stew Benedict <stewb@linux-foundation.org>
+- Add license files for perldeps.pl and lsbappchk.pl
+
 * Sat Dec  1 2007 Mats Wichmann <mats@linux-foundation.org>
 - renamed package to lsb-appchk-perl from lsbappchk-perl (convention)
 
