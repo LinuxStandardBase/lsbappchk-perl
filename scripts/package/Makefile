@@ -52,7 +52,7 @@ RPM_BINARY_DIR=$(RPM_TMP_BUILD_DIR)/RPMS/noarch
 RPM_SRPM_DIR=$(RPM_TMP_BUILD_DIR)/SRPMS
 
 # Override this on the command line to use a different repo
-BZRTREES?=http://bzr.freestandards.org/lsb/devel
+BZRTREES?=http://bzr.linux-foundation.org/lsb/devel
 BZR_MODULE=lsbappchk-perl
 
 # Default target
@@ -63,7 +63,7 @@ all: rpm_package
 endif
 
 clean:
-	@rm -f *.rpm *.deb *.tar.gz perldeps.pl
+	@rm -f *.rpm *.deb *.tar.gz *perldeps.pl 
 
 tarball: $(SOURCE1) $(SOURCE2)
 
@@ -96,5 +96,6 @@ $(SOURCE1):
 
 $(SOURCE2):
 	wget -Operldeps.pl 'http://rpm5.org/cvs/getfile?f=rpm/scripts/perldeps.pl&v=1.5'
+	wget -OCOPYING.perldeps.pl 'http://rpm5.org/cvs/getfile?f=rpm/COPYING&v=1.3'
 
 .PHONY : tarball rpm_package
