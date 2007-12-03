@@ -49,9 +49,9 @@ EOF
 cp VERSION.lsbappchk.pl ${RPM_BUILD_ROOT}%{basedir}/share/appchk
 
 # License files
-install -d ${RPM_BUILD_ROOT}%{basedir}/share/doc/%{name}
-cp %{SOURCE2} ${RPM_BUILD_ROOT}%{basedir}/share/doc/%{name}
-cp source/COPYING ${RPM_BUILD_ROOT}%{basedir}/share/doc/%{name}
+install -d ${RPM_BUILD_ROOT}%{basedir}/doc/%{name}
+cp %{SOURCE2} ${RPM_BUILD_ROOT}%{basedir}/doc/%{name}
+cp source/COPYING ${RPM_BUILD_ROOT}%{basedir}/doc/%{name}
 
 #==================================================
 %clean
@@ -68,8 +68,8 @@ fi
 /opt/lsb/lib/appchk/*
 %dir /opt/lsb/share/appchk
 /opt/lsb/share/appchk/*
-%dir /opt/lsb/share/doc/%{name}
-/opt/lsb/share/doc/%{name}/*
+%dir /opt/lsb/doc/%{name}
+/opt/lsb/doc/%{name}/*
 
 #==================================================
 %changelog
