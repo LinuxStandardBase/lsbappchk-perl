@@ -55,7 +55,7 @@ cp source/COPYING ${RPM_BUILD_ROOT}%{basedir}/doc/%{name}
 
 #==================================================
 %clean
-if [ -z "${RPM_BUILD_ROOT}"  -a "${RPM_BUILD_ROOT}" != "/" ]; then 
+if [ ! -z "${RPM_BUILD_ROOT}"  -a "${RPM_BUILD_ROOT}" != "/" ]; then 
     rm -rf ${RPM_BUILD_ROOT}
 fi
 
