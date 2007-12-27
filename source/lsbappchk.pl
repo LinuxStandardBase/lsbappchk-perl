@@ -36,7 +36,7 @@ sub time {
 
 sub test_time {
   my ($sec,$min,$hour,$mday,$mon,$year)=localtime;
-  my $year += 1900;
+  $year += 1900;
   my $r=sprintf("%02d:%02d:%02d %04d%02d%02d",$hour,$min,$sec,$year,$mon,$mday)
 }
 
@@ -61,7 +61,7 @@ sub test_end {
 
 sub test_result {
   my ($tnum, $result) = @_;
-  $resnum;
+  my $resnum = 0;
   my $time=&time;
   if ("$result" eq "") {
     $result="NORESULT";
