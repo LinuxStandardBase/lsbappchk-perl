@@ -37,7 +37,7 @@ sub time {
 sub test_time {
   my ($sec,$min,$hour,$mday,$mon,$year)=localtime;
   $year += 1900;
-  my $r=sprintf("%02d:%02d:%02d %04d%02d%02d",$hour,$min,$sec,$year,$mon,$mday)
+  my $r=sprintf("%02d:%02d:%02d %04d%02d%02d",$hour,$min,$sec,$year,$mon+1,$mday)
 }
 
 sub test_start {
