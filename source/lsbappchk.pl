@@ -61,7 +61,7 @@ sub test_end {
 
 sub test_result {
   my ($tnum, $result) = @_;
-  my $resnum = 0;
+  $resnum = 0;
   my $time=&time;
   if ("$result" eq "") {
     $result="NORESULT";
