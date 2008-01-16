@@ -176,7 +176,9 @@ Memoize::AnyDBM_File
 Memoize::Expire
 Memoize::ExpireFile
 Memoize::ExpireTest
-Memoize::NDBM_File
+# not shipped by all distributions
+# bug 1887
+#Memoize::NDBM_File
 Memoize::SDBM_File
 Memoize::Storable
 # not shipped by all distributions
