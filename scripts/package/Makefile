@@ -2,7 +2,7 @@
 # XXX a specfile from this info, but not yet: for now keep in sync
 PACKAGE=lsb-appchk-perl
 VERSION=3.2.0
-RELEASE=3
+RELEASE=4
 
 #
 # Derive date string for daily snapshots
