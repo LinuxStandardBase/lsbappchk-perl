@@ -8,6 +8,8 @@
 #use strict;
 our $VERSION = "lsbappchk.pl 0.1 (noarch)";
 our $basedir = "/opt/lsb";
+our $max_version = 5.008999;
+our $lsb_version = "5.8.X with X >= 8 (<= " . $max_version . ")";
 package tet;
 
 use Getopt::Long;
@@ -161,9 +163,10 @@ for my $file (grep /^[^-]/, @ARGV) {
   file_info($file) if $journal;
   test_result($tnum, "PASS") if $journal;
   test_end($tnum) if $journal;
+  my $verbage = "is used, but is not part of LSB";
+  my $vermsg = "but LSB specifies " . $lsb_version;
   for my $req ($deps->requires) {
     $tnum++;
-    my $verbage = "is used, but is not part of LSB";
     my $value = $req->value;
     test_start($tnum) if $journal;
     tp_start($tnum, "Check $value") if $journal;
@@ -174,10 +177,23 @@ for my $file (grep /^[^-]/, @ARGV) {
         test_result($tnum, "PASS");
       }
     } else {
-      printf "  %s %s\n", $req->value, $verbage;
-      if ($journal) {
-	test_info($tnum, $req->value . " " . $verbage);
-        test_result($tnum, "FAIL");
+      if ($req->type == 'perl version') {
+        # required perl version cannot be more than 5.8.X
+        if ($req->value > $max_version) {
+          printf "Requires perl version %s %s\n", $req->value, $vermsg;
+          if ($journal) {
+            test_info($tnum, "requires perl version " . $req->value . " " . $vermsg);
+            test_result($tnum, "FAIL");
+          }
+        } else {
+          test_result($tnum, "PASS") if $journal;
+        }	
+      } else {
+        printf "  %s %s\n", $req->value, $verbage;
+        if ($journal) {
+          test_info($tnum, $req->value . " " . $verbage);
+          test_result($tnum, "FAIL");
+        }
       }
     }
     test_end($tnum) if $journal;
