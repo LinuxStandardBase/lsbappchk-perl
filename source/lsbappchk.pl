@@ -179,10 +179,16 @@ for my $file (grep /^[^-]/, @ARGV) {
     } else {
       if ($req->type == 'perl version') {
         # required perl version cannot be more than 5.8.X
-        if ($req->value > $max_version) {
+        # test fails for plain 5.X.X, with no leading "v"
+        # and silently passes things like v5.9.X
+        # try to reformat and check that value too
+        $value =~ s/^v//;
+        my ($major, $minor, $release) = split(/\./, $value);
+        my $newvalue = sprintf("%d.%03d%03d", $major, $minor, $release);
+        if ($value > $max_version && $newvalue > $max_version) {
           printf "Requires perl version %s %s\n", $req->value, $vermsg;
           if ($journal) {
-            test_info($tnum, "requires perl version " . $req->value . " " . $vermsg);
+            test_info($tnum, "Requires perl version " . $req->value . " " . $vermsg);
             test_result($tnum, "FAIL");
           }
         } else {
