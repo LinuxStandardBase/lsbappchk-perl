@@ -177,7 +177,7 @@ for my $file (grep /^[^-]/, @ARGV) {
         test_result($tnum, "PASS");
       }
     } else {
-      if ($req->type == 'perl version') {
+      if ($req->type eq 'perl version') {
         # required perl version cannot be more than 5.8.X
         # test fails for plain 5.X.X, with no leading "v"
         # and silently passes things like v5.9.X
