@@ -1,8 +1,11 @@
 # XXX We should play the usual tricks defining stuff here and building
 # XXX a specfile from this info, but not yet: for now keep in sync
 PACKAGE=lsb-appchk-perl
-VERSION=3.2.0
-RELEASE=4
+VERSION=3.90.0
+RELEASE=1
+
+# for getting the module list from the lsb db
+DBOPTS=-N -h $$LSBDBHOST -u $$LSBUSER --password=$$LSBDBPASSWD
 
 #
 # Derive date string for daily snapshots
@@ -16,6 +19,7 @@ RPM_SOURCE_NAME=$(FULL_PACKAGE_NAME)-$(RELEASE).src.rpm
 
 SOURCE1 = $(PACKAGE)-$(VERSION).tar.gz
 SOURCE2 = perldeps.pl
+MODULE_LIST = lsb-perl-modules.list
 
 # Temporary build directory
 TMP_BUILD_DIR=/tmp/$(FULL_PACKAGE_NAME)
@@ -63,9 +67,12 @@ all: rpm_package
 endif
 
 clean:
-	@rm -f *.rpm *.deb *.tar.gz *perldeps.pl 
+	@rm -f *.rpm *.deb *.tar.gz *perldeps.pl $(MODULE_LIST) 
 
-tarball: $(SOURCE1) $(SOURCE2)
+$(MODULE_LIST):
+	mysql $(DBOPTS) $$LSBDB < get_perl_modules.sql > $(MODULE_LIST)
+
+tarball: $(MODULE_LIST) $(SOURCE1) $(SOURCE2)
 
 deb_package: rpm_package
 	@fakeroot alien -cdk $(RPM_BINARY_NAME)
@@ -78,7 +85,7 @@ ifndef BUILD_NO_DEB
 	@ls *.deb
 endif
 
-$(RPM_BINARY_NAME) $(RPM_SOURCE_NAME): $(PACKAGE).spec $(SOURCE1) $(SOURCE2) 
+$(RPM_BINARY_NAME) $(RPM_SOURCE_NAME): $(PACKAGE).spec tarball 
 	@mkdir -p $(RPM_TMP_BUILD_DIR)/BUILD
 	@mkdir -p $(RPM_TMP_BUILD_DIR)/RPMS
 	@mkdir -p $(RPM_TMP_BUILD_DIR)/SRPMS

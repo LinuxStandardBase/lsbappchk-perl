@@ -9,6 +9,7 @@ Group: Development/Tools
 Source: %{name}-%{version}.tar.gz
 Source1: perldeps.pl
 Source2: COPYING.perldeps.pl
+Source3: lsb-perl-modules.list
 Patch0: perldeps-patch-for-lsb.patch
 URL: http://www.linuxbase.org/test
 #Prefix: %{_prefix}
@@ -40,7 +41,7 @@ mkdir -p ${RPM_BUILD_ROOT}%{basedir}/lib/appchk
 mkdir -p ${RPM_BUILD_ROOT}%{basedir}/share/appchk
 cp -p source/lsbappchk.pl ${RPM_BUILD_ROOT}%{basedir}/bin
 cp -p perldeps.pl ${RPM_BUILD_ROOT}%{basedir}/lib/appchk
-cp -p lists/lsb-perl-modules.list ${RPM_BUILD_ROOT}%{basedir}/share/appchk
+cp -p %{SOURCE3} ${RPM_BUILD_ROOT}%{basedir}/share/appchk
 
 # VERSION file for the journal
 cat > VERSION.lsbappchk.pl << EOF
@@ -73,6 +74,9 @@ fi
 
 #==================================================
 %changelog
+* Fri Feb 15 2008 Stew Benedict <stewb@linux-foundation.org>
+- We generate lsb-perl-modules.list from the specdb now
+ 
 * Mon Dec 03 2007 Stew Benedict <stewb@linux-foundation.org>
 - Add license files for perldeps.pl and lsbappchk.pl
 

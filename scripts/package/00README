@@ -1,0 +1,10 @@
+As of LSB 4.0 devel, this build requires a setup specdb 
+and the environment variables to access it, similar to 
+the setup for building the specdb itself:
+
+LSBUSER, LSBDBPASSWORD, LSBDBHOST and LSBDB
+
+So make modules_list creates lists/lsb-perl-modules.list 
+at each build, pulling the LSB list of modules from
+InterpretedLanguageModule, InterpretedLanguage.
+ 
