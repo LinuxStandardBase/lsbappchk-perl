@@ -67,9 +67,9 @@ all: rpm_package
 endif
 
 clean:
-	@rm -f *.rpm *.deb *.tar.gz *perldeps.pl $(MODULE_LIST) 
+	@rm -f *.rpm *.deb *.tar.gz *perldeps.pl 
 
-$(MODULE_LIST):
+gensrc:
 	mysql $(DBOPTS) $$LSBDB < get_perl_modules.sql > $(MODULE_LIST)
 
 tarball: $(MODULE_LIST) $(SOURCE1) $(SOURCE2)
