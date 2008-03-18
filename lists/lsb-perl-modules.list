@@ -64,12 +64,12 @@ Encode::JP::JIS7
 Encode::KR
 Encode::KR::2022_KR
 Encode::MIME::Header
-Encode::MIME::Header::ISO_2022_JP
+# dropped by bug 1922
+#Encode::MIME::Header::ISO_2022_JP
 Encode::Symbol
 Encode::TW
 Encode::Unicode
 Encode::Unicode::UTF7
-Encode::encoding
 English
 Env
 Exporter
@@ -148,26 +148,29 @@ IO::Socket::UNIX
 IPC::Open2
 IPC::Open3
 IPC::SysV
-IPC::SysV::Msg
-IPC::SysV::Semaphore
+IPC::Msg
+IPC::Semaphore
 List::Util
-List::Util::Scalar
+Scalar::Util
 Locale::Constants
 Locale::Country
 Locale::Currency
 Locale::Language
 Locale::Maketext
-Locale::Maketext::Guts
-Locale::Maketext::GutsLoader
+# dropped by bug 1922
+#Locale::Maketext::Guts
+#Locale::Maketext::GutsLoader
 Locale::Script
 MIME::Base64
-MIME::Base64::QuotedPrint
+MIME::QuotedPrint
 Math::BigFloat
-Math::BigFloat::Trace
+# dropped by bug 1922
+#Math::BigFloat::Trace
 Math::BigInt
 Math::BigInt::Calc
 Math::BigInt::CalcEmu
-Math::BigInt::Trace
+# dropped by bug 1922
+#Math::BigInt::Trace
 Math::BigRat
 Math::Complex
 Math::Trig
@@ -188,11 +191,12 @@ Net::Cmd
 Net::Config
 Net::Domain
 Net::FTP
-Net::FTP::A
-Net::FTP::E
-Net::FTP::I
-Net::FTP::L
-Net::FTP::dataconn
+# dropped by bug 1922
+#Net::FTP::A
+#Net::FTP::E
+#Net::FTP::I
+#Net::FTP::L
+#Net::FTP::dataconn
 Net::NNTP
 Net::Netrc
 Net::POP3
@@ -207,8 +211,7 @@ O
 # not shipped by all distributions
 #ODBM_File
 Opcode
-Opcode::Safe
-Opcode::ops
+Safe
 POSIX
 PerlIO
 PerlIO::encoding
@@ -225,9 +228,10 @@ Pod::Man
 Pod::ParseLink
 Pod::ParseUtils
 Pod::Parser
-Pod::Perldoc
-Pod::Perldoc::BaseTo
-Pod::Perldoc::GetOptsOO
+# dropped by bug 1922
+#Pod::Perldoc
+#Pod::Perldoc::BaseTo
+#Pod::Perldoc::GetOptsOO
 Pod::Perldoc::ToChecker
 Pod::Perldoc::ToMan
 Pod::Perldoc::ToNroff
