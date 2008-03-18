@@ -73,6 +73,10 @@ fi
 
 #==================================================
 %changelog
+* Tue Mar 18 2008 Stew Benedict <stewb@linux-foundation.org>
+- drop/rename several modules that were mistakenly included
+  (bug 1922)
+
 * Mon Dec 03 2007 Stew Benedict <stewb@linux-foundation.org>
 - Add license files for perldeps.pl and lsbappchk.pl
 
