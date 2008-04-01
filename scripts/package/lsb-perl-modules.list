@@ -70,7 +70,6 @@ Encode::JP::JIS7
 Encode::KR
 Encode::KR::2022_KR
 Encode::MIME::Header
-Encode::MIME::Header::ISO_2022_JP
 Encode::Symbol
 Encode::TW
 Encode::Unicode
@@ -162,17 +161,13 @@ Locale::Country
 Locale::Currency
 Locale::Language
 Locale::Maketext
-Locale::Maketext::Guts
-Locale::Maketext::GutsLoader
 Locale::Script
 MIME::Base64
 MIME::QuotedPrint
 Math::BigFloat
-Math::BigFloat::Trace
 Math::BigInt
 Math::BigInt::Calc
 Math::BigInt::CalcEmu
-Math::BigInt::Trace
 Math::BigRat
 Math::Complex
 Math::Trig
@@ -188,11 +183,6 @@ Net::Cmd
 Net::Config
 Net::Domain
 Net::FTP
-Net::FTP::A
-Net::FTP::E
-Net::FTP::I
-Net::FTP::L
-Net::FTP::dataconn
 Net::NNTP
 Net::Netrc
 Net::POP3
@@ -222,9 +212,6 @@ Pod::Man
 Pod::ParseLink
 Pod::ParseUtils
 Pod::Parser
-Pod::Perldoc
-Pod::Perldoc::BaseTo
-Pod::Perldoc::GetOptsOO
 Pod::Perldoc::ToChecker
 Pod::Perldoc::ToMan
 Pod::Perldoc::ToNroff
