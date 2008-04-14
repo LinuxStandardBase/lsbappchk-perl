@@ -11,6 +11,7 @@ Source1: perldeps.pl
 Source2: COPYING.perldeps.pl
 Source3: lsb-perl-modules.list
 Patch0: perldeps-patch-for-lsb.patch
+Patch1: perldeps-bug-2006.patch
 URL: http://www.linuxbase.org/test
 #Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-root
@@ -31,6 +32,7 @@ by Chip Turner <cturner@redhat.com>.
 %build
 cp %{SOURCE1} .
 patch -p0 -b -z .lsb-usage < %{PATCH0}
+patch -p0 -b -z .bug-2006 < %{PATCH1}
 
 #==================================================
 %install
@@ -74,6 +76,9 @@ fi
 
 #==================================================
 %changelog
+* Mon Apr 14 2008 Stew Benedict <stewb@linux-foundation.org>
+- patch perldeps.pl for bug 2006 (false positives from here docs, P1)
+
 * Fri Feb 15 2008 Stew Benedict <stewb@linux-foundation.org>
 - We generate lsb-perl-modules.list from the specdb now
  
