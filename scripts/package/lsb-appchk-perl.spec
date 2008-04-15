@@ -10,6 +10,7 @@ Source: %{name}-%{version}.tar.gz
 Source1: perldeps.pl
 Source2: COPYING.perldeps.pl
 Patch0: perldeps-patch-for-lsb.patch
+Patch1: perldeps-bug-2006.patch
 URL: http://www.linuxbase.org/test
 #Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-root
@@ -30,6 +31,7 @@ by Chip Turner <cturner@redhat.com>.
 %build
 cp %{SOURCE1} .
 patch -p0 -b -z .lsb-usage < %{PATCH0}
+patch -p0 -b -z .bug-2006 < %{PATCH1}
 
 #==================================================
 %install
@@ -73,6 +75,9 @@ fi
 
 #==================================================
 %changelog
+* Tue Apr 15 2008 Stew Benedict <stewb@linux-foundation.org>
+- patch perldeps.pl for bug 2006 (false positives from here docs, P1)
+
 * Tue Mar 18 2008 Stew Benedict <stewb@linux-foundation.org>
 - drop/rename several modules that were mistakenly included
   (bug 1922)

@@ -1,0 +1,54 @@
+--- ./perldeps.pl.bug-2006	2008-03-18 17:35:01.000000000 -0400
++++ ./perldeps.pl	2008-04-14 19:12:13.000000000 -0400
+@@ -200,6 +200,9 @@
+ sub process_file {
+   my $self     = shift;
+   my $filename = shift;
++  my $heredoc = 0;
++  my $eof = '';
++  my $test = '';
+ 
+   if (not open FH, "<$filename") {
+     # XXX: Should be die IMHO...JOO
+@@ -208,10 +211,32 @@
+   }
+ 
+   while (<FH>) {
++    $test = $_;
++    chomp($test);
++
+     next if m(^=(head[1-4]|pod|item)) .. m(^=cut);
+     next if m(^=over) .. m(^=back);
+     last if m/^__(DATA|END)__$/;
+ 
++    # are we looking at a here doc?
++    if (m/^(.*=)(\s*<<)(.*;)/) {
++      $heredoc = 1;
++      # strip anything past ";"
++      my $loc = index($_, ";");
++      my $substr = substr($_,0,$loc);
++      # find the EOF marker
++      my @args = split /<</, $substr;
++      my $index = @args;
++      $eof = $args[$index-1];
++      $eof =~ s/"|'//g;
++      next
++    }
++    # find the end of the here doc to resume checking
++    if (($eof eq $test) && ($test ne '')) {
++      $heredoc = 0;
++      $eof = '';
++    }
++
+     if (m/^\s*package\s+([\w\:]+)\s*;/) {
+       $self->add_provide(-filename => $filename, -provide => $1, -type => "package", -line => $.);
+     }
+@@ -238,7 +263,7 @@
+     elsif (m/^\s*(use|require)\s+(v?[0-9\._]+)/) {
+       $self->add_require(-filename => $filename, -require => $2, -type => "perl version", -line => $.);
+     }
+-    elsif (m/^\s*use\s+([\w\:]+)/) {
++    elsif ((m/^\s*use\s+([\w\:]+)/) && ($heredoc != 1)) {
+       $self->add_require(-filename => $filename, -require => $1, -type => "use", -line => $.);
+     }
+     elsif (m/^require\s+([\w\:]+).*;/) {
