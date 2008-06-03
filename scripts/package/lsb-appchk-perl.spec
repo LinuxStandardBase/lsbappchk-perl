@@ -33,6 +33,8 @@ by Chip Turner <cturner@redhat.com>.
 cp %{SOURCE1} .
 patch -p0 -b -z .lsb-usage < %{PATCH0}
 patch -p0 -b -z .bug-2006 < %{PATCH1}
+# (sb) set the default version we'll test against (from the Makefile)
+sed -i 's|our $LSB_VERSION = 4.0|our $LSB_VERSION = %{lsbversion}|g' source/lsbappchk.pl
 
 #==================================================
 %install
@@ -76,6 +78,9 @@ fi
 
 #==================================================
 %changelog
+* Tue Jun 03 2008 Stew Benedict <stewb@linux-foundation.org>
+- add multiversion support (bug 2097)
+
 * Mon Apr 14 2008 Stew Benedict <stewb@linux-foundation.org>
 - patch perldeps.pl for bug 2006 (false positives from here docs, P1)
 

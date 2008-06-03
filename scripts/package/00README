@@ -4,7 +4,7 @@ the setup for building the specdb itself:
 
 LSBUSER, LSBDBPASSWORD, LSBDBHOST and LSBDB
 
-So make modules_list creates lists/lsb-perl-modules.list 
-at each build, pulling the LSB list of modules from
-InterpretedLanguageModule, InterpretedLanguage.
+So make gensrc creates lsb-perl-modules.list , pulling 
+the LSB list of modules from InterpretedLanguageModule, 
+InterpretedLanguage. 
  

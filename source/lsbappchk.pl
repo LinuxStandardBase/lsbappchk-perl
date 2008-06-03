@@ -7,6 +7,7 @@
 # tet stuff blows up with strict
 #use strict;
 our $VERSION = "lsbappchk.pl 0.1 (noarch)";
+our $LSB_VERSION = 4.0
 our $basedir = "/opt/lsb";
 our $max_version = 5.008999;
 our $lsb_version = "5.8.X with X >= 8 (<= " . $max_version . ")";
