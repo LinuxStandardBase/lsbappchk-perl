@@ -2,15 +2,14 @@
 # prototype application to check perl applications
 # for LSB compliance
 # uses perldeps.pl from the rpm-build package
-# Copyright GPL, Stew Benedict <stewb@linux-foundation.org>
+# Copyright GPL, Stew Benedict <stewb@linuxfoundation.org>
 
 # tet stuff blows up with strict
 #use strict;
 our $VERSION = "lsbappchk.pl 0.1 (noarch)";
-our $LSB_VERSION = 4.0
 our $basedir = "/opt/lsb";
 our $max_version = 5.008999;
-our $lsb_version = "5.8.X with X >= 8 (<= " . $max_version . ")";
+our $perl_version = "5.8.X with X >= 8 (<= " . $max_version . ")";
 package tet;
 
 use Getopt::Long;
@@ -18,7 +17,8 @@ use File::Basename;
 
 our $JOURNAL_HANDLE;
 my $journal = '';
-my $options = GetOptions("journal" => \$journal);
+my $lsb_version = "4.0";
+my $options = GetOptions("journal" => \$journal, "version=s" => \$lsb_version);
 
 our @TET_CODE_FILE=("0   PASS        Continue\n",
 	"1   FAIL        Continue\n",
@@ -135,7 +135,12 @@ while (defined($line = <MFILE>)) {
 close MFILE;
 
 my $argc = @ARGV;
-die "Usage $0 [-j|--journal] [filename(s)]\n" if $argc == 0;
+die "Usage $0 [-j|--journal] [-v|--version=N.N (LSB version to test for, default is $lsb_version)] [filename(s)]\n" if $argc == 0;
+
+# semi-reasonable max for a while
+if ($lsb_version < 1.0 or $lsb_version > 20) {
+  die "Invalid LSB version: $lsb_version";
+}
 
 my $deps = new DependencyParser;
 for my $file (grep /^[^-]/, @ARGV) {
@@ -165,15 +170,33 @@ for my $file (grep /^[^-]/, @ARGV) {
   test_result($tnum, "PASS") if $journal;
   test_end($tnum) if $journal;
   my $verbage = "is used, but is not part of LSB";
-  my $vermsg = "but LSB specifies " . $lsb_version;
+  my $vermsg = "but LSB specifies " . $perl_version;
+  my $appearedmsg = "did not appear until LSB ";
+  my $withdrawnmsg = "was withdrawn in LSB ";
   for my $req ($deps->requires) {
     $tnum++;
     my $value = $req->value;
     test_start($tnum) if $journal;
     tp_start($tnum, "Check $value") if $journal;
     my @match = grep { /^$value/ } @mlist;
+    my ($module, $appeared, $withdrawn) = split(' ', $match[0]);
     my $found = @match;
-    if ($found) {
+    if ($lsb_version < $appeared) {
+      $appearedmsg = $module . ' ' . $appearedmsg;
+      printf("%s%s\n", $appearedmsg, $appeared);  
+      if ($journal) {
+        test_info($tnum, $appearedmsg . $appeared);
+        test_result($tnum, "FAIL");
+      }
+    }
+    if ($lsb_version > $withdrawn and $withdrawn ne 'NULL') {
+      $withdrawnmsg = $module . ' ' . $withdrawnmsg;
+      printf("%s%s\n", $withdrawnmsg, $withdrawn);  
+      if ($journal) {
+        test_info($tnum, $withdrawnmsg . $withdrawn);
+        test_result($tnum, "FAIL");
+      }
+    } elsif ($found) {
       if ($journal) {
         test_result($tnum, "PASS");
       }

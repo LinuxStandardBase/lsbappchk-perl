@@ -34,7 +34,7 @@ cp %{SOURCE1} .
 patch -p0 -b -z .lsb-usage < %{PATCH0}
 patch -p0 -b -z .bug-2006 < %{PATCH1}
 # (sb) set the default version we'll test against (from the Makefile)
-sed -i 's|our $LSB_VERSION = 4.0|our $LSB_VERSION = %{lsbversion}|g' source/lsbappchk.pl
+sed -i 's|my $lsb_version = "4.0"|my $lsb_version = "%{lsbversion}"|g' source/lsbappchk.pl
 
 #==================================================
 %install
