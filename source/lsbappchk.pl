@@ -18,6 +18,8 @@ use File::Basename;
 our $JOURNAL_HANDLE;
 my $journal = '';
 my $lsb_version = "4.0";
+# @ARGV get's clobbered somewhere
+my $fullargs = join(' ', @ARGV);
 my $options = GetOptions("journal" => \$journal, "version=s" => \$lsb_version);
 
 our @TET_CODE_FILE=("0   PASS        Continue\n",
@@ -84,7 +86,7 @@ sub test_info {
 
 sub test_header {
   my $login=getpwuid($<);
-  my $id_string = "0|3.7-lite " . &tet::test_time . "|User: " . $login . " , Command line: " . $0 . "\n"; 
+  my $id_string = "0|3.7-lite " . &tet::test_time . "|User: " . $login . " , Command line: " . $0 . " " . $fullargs . "\n"; 
   printf($JOURNAL_HANDLE $id_string);
   my $uname = `uname -snrvm`;
   chomp $uname;
@@ -145,7 +147,7 @@ if ($lsb_version < 1.0 or $lsb_version > 20) {
 my $deps = new DependencyParser;
 for my $file (grep /^[^-]/, @ARGV) {
   $deps->process_file($file);
-  print "$file:\n";
+  print "$file tested against LSB $lsb_version:\n";
 
   if ($journal) {
     my $journal_path="journal." . basename($0) . "." . basename($file);
