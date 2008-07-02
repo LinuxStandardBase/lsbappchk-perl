@@ -41,10 +41,9 @@ sed -i 's|my $lsb_version = "4.0"|my $lsb_version = "%{lsbversion}"|g' source/ls
 
 rm -rf ${RPM_BUILD_ROOT}
 mkdir -p ${RPM_BUILD_ROOT}%{basedir}/bin
-mkdir -p ${RPM_BUILD_ROOT}%{basedir}/lib/appchk
 mkdir -p ${RPM_BUILD_ROOT}%{basedir}/share/appchk
 cp -p source/lsbappchk.pl ${RPM_BUILD_ROOT}%{basedir}/bin
-cp -p perldeps.pl ${RPM_BUILD_ROOT}%{basedir}/lib/appchk
+cp -p perldeps.pl ${RPM_BUILD_ROOT}%{basedir}/share/appchk
 cp -p %{SOURCE3} ${RPM_BUILD_ROOT}%{basedir}/share/appchk
 
 # VERSION file for the journal
@@ -69,8 +68,6 @@ fi
 %defattr(-,root,root)
 
 /opt/lsb/bin/lsbappchk.pl
-%dir /opt/lsb/lib/appchk
-/opt/lsb/lib/appchk/*
 %dir /opt/lsb/share/appchk
 /opt/lsb/share/appchk/*
 %dir /opt/lsb/doc/%{name}
@@ -78,6 +75,9 @@ fi
 
 #==================================================
 %changelog
+* Wed Jul 02 2008 Stew Benedict <stewb@linux-foundation.org>
+- lose /opt/lsb/lib to co-exist with new multiversion sdk
+
 * Tue Jun 03 2008 Stew Benedict <stewb@linux-foundation.org>
 - add multiversion support (bug 2097)
 

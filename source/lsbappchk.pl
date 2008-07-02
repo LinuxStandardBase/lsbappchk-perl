@@ -31,7 +31,7 @@ our @TET_CODE_FILE=("0   PASS        Continue\n",
 	"6   UNINITIATED Continue\n",
 	"7   NORESULT    Continue\n");
 
-require "/opt/lsb/lib/appchk/perldeps.pl";
+require "/opt/lsb/share/appchk/perldeps.pl";
 require "/opt/lsb-tet3-lite/lib/perl/api.pl";
 
 sub time {
