@@ -1,7 +1,7 @@
 # XXX We should play the usual tricks defining stuff here and building
 # XXX a specfile from this info, but not yet: for now keep in sync
 PACKAGE=lsb-appchk-perl
-VERSION=3.2.1
+VERSION=3.2.2
 RELEASE=1
 
 #
