@@ -300,8 +300,6 @@ Unicode::Normalize
 Unicode::UCD
 User::grent
 User::pwent
-XS::APItest
-XS::Typemap
 attributes
 autouse
 base
