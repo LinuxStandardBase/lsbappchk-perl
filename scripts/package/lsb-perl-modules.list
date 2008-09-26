@@ -280,8 +280,6 @@ Unicode::Normalize	3.2	NULL
 Unicode::UCD	3.2	NULL
 User::grent	3.2	NULL
 User::pwent	3.2	NULL
-XS::APItest	3.2	NULL
-XS::Typemap	3.2	NULL
 charnames	3.2	NULL
 constant	3.2	NULL
 diagnostics	3.2	NULL
