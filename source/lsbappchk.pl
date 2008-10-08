@@ -144,8 +144,8 @@ if ($lsb_version < 1.0 or $lsb_version > 20) {
     die "Invalid LSB version: $lsb_version";
 }
 
-my $deps = new DependencyParser;
 for my $file (grep /^[^-]/, @ARGV) {
+    my $deps = new DependencyParser;
     $deps->process_file($file);
     print "$file tested against LSB $lsb_version:\n";
 

@@ -2,7 +2,7 @@
 # XXX a specfile from this info, but not yet: for now keep in sync
 # VERSION, RELEASE and LSB_VERSION get used by the spec file
 PACKAGE=lsb-appchk-perl
-VERSION=3.95.0
+VERSION=3.96.0
 RELEASE=1
 # default version we will test against - change as needed
 LSB_VERSION=4.0
