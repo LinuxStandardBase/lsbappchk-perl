@@ -6,21 +6,28 @@
 
 # tet stuff blows up with strict
 #use strict;
-our $VERSION = "lsbappchk.pl 0.2 (noarch)";
-our $basedir = "/opt/lsb";
+our $VERSION = "lsbappchk.pl 0.3 (noarch)";
+our $basedir = "/opt/lsb/share/appchk";
 our $max_version = 5.008999;
 our $perl_version = "5.8.X with X >= 8 (<= " . $max_version . ")";
+our $searchfound = "";
+our $searchfile = "";
 package tet;
 
 use Getopt::Long;
 use File::Basename;
+use File::Find;
 
 our $JOURNAL_HANDLE;
 my $journal = '';
 my $lsb_version = "4.0";
 # @ARGV get's clobbered somewhere
 my $fullargs = join(' ', @ARGV);
-my $options = GetOptions("journal" => \$journal, "version=s" => \$lsb_version);
+my $options = GetOptions("journal" => \$journal, 
+                        "version=s" => \$lsb_version,
+                        "lanana=s" => \$lanana,
+                        "modpath=s" => \$modpath,
+                        "help|?" => sub { show_usage() });
 
 our @TET_CODE_FILE=("0   PASS        Continue\n",
 	"1   FAIL        Continue\n",
@@ -29,7 +36,9 @@ our @TET_CODE_FILE=("0   PASS        Continue\n",
 	"4   UNSUPPORTED Continue\n",
 	"5   UNTESTED    Continue\n",
 	"6   UNINITIATED Continue\n",
-	"7   NORESULT    Continue\n");
+	"7   NORESULT    Continue\n",
+	"101 WARNING     Continue\n",
+	"102 FIP         Continue\n",);
 
 require "/opt/lsb/share/appchk/perldeps.pl";
 require "/opt/lsb-tet3-lite/lib/perl/api.pl";
@@ -92,7 +101,7 @@ sub test_header {
     chomp $uname;
     my $host_info = "5|" . $uname . "|System Information\n";
     printf($JOURNAL_HANDLE $host_info);
-    my $vfile = "/opt/lsb/share/appchk/VERSION.lsbappchk.pl";
+    my $vfile = "$basedir/VERSION.lsbappchk.pl";
     open(VFILE, $vfile) || die "Could not open $vfile\n";
     while (defined($line = <VFILE>)) {
         $test_ver = $line;
@@ -124,8 +133,58 @@ sub file_info {
     &output(520, "1 0 0 0", "BINARY_MD5SUM $md5sum");
 }
 
+sub show_usage() {
+    print "Usage $0   
+    [-j|--journal] 
+    [-v|--version=N.N (LSB version to test for, default is $lsb_version)] 
+    [-L|--lanana=<LANANA name> (will search /opt/LANANA for private modules)]
+    [-m|--modpath=<additional comma seperated path(s) 
+                    to search for private modules>]
+    [-?|--help (this message)] 
+    [filename(s)]\n";
+    exit(1);
+}
+
+sub file_exists() {
+    if ($_ eq $searchfile) {
+        $searchfound = $File::Find::name if -f;
+    }
+}
+
+sub check_private_path {
+    my ($modulename, $lanana, $modpath) = @_;
+    my $modulefile;
+    for my $ext (".pl", ".pm") {
+        $modulefile = $modulename . $ext;
+        if (-f $modulefile) {
+            return "./" . $modulefile;
+        } 
+        $searchfound = "";
+        if ($lanana) {
+            $full_path = "/opt/" . $lanana;
+            $searchfile = $modulefile; 
+            die "directory $full_path does not exist..." if !(-d $full_path);
+            find(\&file_exists, $full_path);
+            return $searchfound if $searchfound ne "";
+        }        
+        if ($modpath) {
+            my @modpaths = split(",", $modpath);
+            foreach (@modpaths) {
+                die "directory $_ does not exist..." if !(-d $_);
+            }
+            $searchfile = $modulefile; 
+            find(\&file_exists, @modpaths);
+            return $searchfound if $searchfound ne "";
+        }
+    }
+}
+
+# main routine
+my $argc = @ARGV;
+show_usage if $argc == 0;
+
 # read the list of LSB modules
-my $mlistf = "$basedir/share/appchk/lsb-perl-modules.list";
+my $mlistf = "$basedir/lsb-perl-modules.list";
 open(MFILE, $mlistf) || die "Could not open $mlistf\n";
 
 my $line;
@@ -136,16 +195,14 @@ while (defined($line = <MFILE>)) {
 }
 close MFILE;
 
-my $argc = @ARGV;
-die "Usage $0 [-j|--journal] [-v|--version=N.N (LSB version to test for, default is $lsb_version)] [filename(s)]\n" if $argc == 0;
-
 # semi-reasonable max for a while
 if ($lsb_version < 1.0 or $lsb_version > 20) {
     die "Invalid LSB version: $lsb_version";
 }
 
+my $deps = new DependencyParser;
+
 for my $file (grep /^[^-]/, @ARGV) {
-    my $deps = new DependencyParser;
     $deps->process_file($file);
     print "$file tested against LSB $lsb_version:\n";
 
@@ -172,6 +229,7 @@ for my $file (grep /^[^-]/, @ARGV) {
     test_result($tnum, "PASS") if $journal;
     test_end($tnum) if $journal;
     my $verbage = "is used, but is not part of LSB";
+    my $localpath = "is used, but loaded from a non-standard location";
     my $vermsg = "but LSB specifies " . $perl_version;
     my $appearedmsg = "did not appear until LSB ";
     my $withdrawnmsg = "was withdrawn in LSB ";
@@ -220,12 +278,21 @@ for my $file (grep /^[^-]/, @ARGV) {
                     }
                 } else {
                     test_result($tnum, "PASS") if $journal;
-                }	
+                }
             } else {
-                printf "  %s %s\n", $req->value, $verbage;
-                if ($journal) {
-                    test_info($tnum, $req->value . " " . $verbage);
-                    test_result($tnum, "FAIL");
+                my $modulefile = check_private_path($req->value,$lanana,$modpath);
+                if ($modulefile) {
+                    printf "  %s %s: %s\n", $req->value, $localpath, $modulefile;
+                    if ($journal) {
+                        test_info($tnum, $req->value . " " . $localpath . ": " . $modulefile);
+                        test_result($tnum, "PASS");
+                    }
+                } else {
+                    printf "  %s %s\n", $req->value, $verbage;
+                    if ($journal) {
+                        test_info($tnum, $req->value . " " . $verbage);
+                        test_result($tnum, "FAIL");
+                    }
                 }
             }
         }
