@@ -7,7 +7,9 @@
 # tet stuff blows up with strict
 #use strict;
 our $VERSION = "lsbappchk.pl 0.3 (noarch)";
-our $basedir = "/opt/lsb/share/appchk";
+use FindBin;
+our $basedir = $FindBin::Bin;       # /opt/lsb/bin
+$basedir =~ s!/bin$!/share/appchk!; # /opt/lsb/share/appchk
 our $max_version = 5.008999;
 our $perl_version = "5.8.X with X >= 8 (<= " . $max_version . ")";
 our $searchfound = "";
@@ -40,8 +42,129 @@ our @TET_CODE_FILE=("0   PASS        Continue\n",
 	"101 WARNING     Continue\n",
 	"102 FIP         Continue\n",);
 
-require "/opt/lsb/share/appchk/perldeps.pl";
-require "/opt/lsb-tet3-lite/lib/perl/api.pl";
+require "$basedir/perldeps.pl";
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Extraction from /opt/lsb-tet3-lite/lib/perl/api.pl
+
+# set current context to process ID and reset block and sequence
+# usage: &setcontext()
+sub setcontext 
+{
+	if ($>!=$context) 
+	{
+		$context=$$;
+		$block=1;
+		$sequence=1;
+	}
+}
+
+# print an error message & die
+# passed the routine name in question
+sub wrong_params
+{
+	die("wrong number of parameters passed to tet\'$_[0]");
+}
+
+# getcode
+# look up a result code name in the result code definition file
+# return 0 if successful with the result number in TET_RESNUM and TET_ABORT
+# set to YES or NO
+# otherwise return 1 if the code could not be found
+
+sub getcode {
+	local($_);
+	
+	($#_!=0) && &wrong_params("getcode");
+	$abort="NO";
+	$resnum=-1;
+
+	local($tet_a) = $_[0];
+	local(@flds);
+	local($ABACTION) = "";
+
+	foreach (@TET_CODE_FILE) {
+		s/^#.*//;
+		if ( ! /^[	 ]*$/) {
+			if (/\"/) {
+				@flds = split /\"/;
+				$flds[0] =~ s/\s//g;
+				$flds[2] =~ s/\s//g;
+			}
+			else {
+				@flds = split;
+			}
+			if ($#flds ge 1 && "$flds[1]" eq "$tet_a") {
+				$resnum = $flds[0];
+				if ($#flds ge 2) {
+					$ABACTION = $flds[2];
+				}
+				else {
+					$ABACTION = "";
+				}
+				last;
+			}
+		}
+	}
+
+	if ($resnum == -1) {
+		return(1);
+	}
+
+	$_ = $ABACTION;
+	G_SWITCH: {
+
+		/^$|Continue/ && do {
+			$abort = "NO";
+			last G_SWITCH;
+		};
+
+		/Abort/ && do {
+			$abort = "YES";
+			last G_SWITCH;
+		};
+
+		&error("invalid action field $ABACTION in file $code");
+		$abort = "NO";
+	}
+
+	0;
+}
+
+# tet_error - print an error message to stderr and on TCM Message line
+sub error {
+	print STDERR "$pname: $_[0]\n";
+	if ("$activity" eq "") { $activity=0;}
+	printf($JOURNAL_HANDLE "510|$activity|$_[0]\n");
+}
+
+# tet_output - print a line to the execution results file
+sub output {
+	local($_);
+	
+	#ensure no newline chars in data & line<512
+	local($arg1,$arg2,$arg3)=@_;
+	local($sp);
+	if (length($arg2)>0) {
+		$sp=" "; } else { $sp=""; }
+	if ("$activity" eq "") { $activity=0;}
+	$_=sprintf("%d|%s%s%s|%s",$arg1,$activity,$sp,$arg2,$arg3);
+	s/\n//;
+	local($l)=0;
+	local($mess);
+	if (length()>511) {
+		$mess=
+			sprintf("warning: results file line truncated: prefix: %d|%s%s%s|",
+			$arg1,$activity,$sp,$arg2,$arg3);
+		$l=1;			
+	}
+	printf($JOURNAL_HANDLE "%.511s\n",$_);
+
+	if ($l) { &error($mess);}
+	
+}
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 sub time {
     my ($sec,$min,$hour)=localtime;
