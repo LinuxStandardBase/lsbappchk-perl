@@ -10,8 +10,9 @@ our $VERSION = "lsbappchk.pl 0.3 (noarch)";
 use FindBin;
 our $basedir = $FindBin::Bin;       # /opt/lsb/bin
 $basedir =~ s!/bin$!/share/appchk!; # /opt/lsb/share/appchk
-our $max_version = 5.008999;
-our $perl_version = "5.8.X with X >= 8 (<= " . $max_version . ")";
+our $max_version = 5.008008;
+our $perl_version = "5.8.8";
+#(<= " . $max_version . ")";
 our $searchfound = "";
 our $searchfile = "";
 package tet;
@@ -352,7 +353,7 @@ for my $file (grep /^[^-]/, @ARGV) {
     test_end($tnum) if $journal;
     my $verbage = "is used, but is not part of LSB";
     my $localpath = "is used, but loaded from a non-standard location";
-    my $vermsg = "but LSB specifies " . $perl_version;
+    my $vermsg = "but LSB specifies " . $perl_version . " as a baseline";
     my $appearedmsg = "did not appear until LSB ";
     my $withdrawnmsg = "was withdrawn in LSB ";
     for my $req ($deps->requires) {
@@ -385,7 +386,7 @@ for my $file (grep /^[^-]/, @ARGV) {
             }
         } else {
             if ($req->type eq 'perl version') {
-                # required perl version cannot be more than 5.8.X
+                # required perl version cannot be more than 5.8.8
                 # test fails for plain 5.X.X, with no leading "v"
                 # and silently passes things like v5.9.X
                 # try to reformat and check that value too
