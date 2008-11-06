@@ -26,7 +26,8 @@ my $journal = '';
 my $lsb_version = "4.0";
 # @ARGV get's clobbered somewhere
 my $fullargs = join(' ', @ARGV);
-my $options = GetOptions("journal" => \$journal, 
+my @input_files;
+my $options = GetOptions("journal" => \$journal,
                         "version=s" => \$lsb_version,
                         "lanana=s" => \$lanana,
                         "modpath=s" => \$modpath,
@@ -50,9 +51,9 @@ require "$basedir/perldeps.pl";
 
 # set current context to process ID and reset block and sequence
 # usage: &setcontext()
-sub setcontext 
+sub setcontext
 {
-	if ($>!=$context) 
+	if ($>!=$context)
 	{
 		$context=$$;
 		$block=1;
@@ -75,7 +76,7 @@ sub wrong_params
 
 sub getcode {
 	local($_);
-	
+
 	($#_!=0) && &wrong_params("getcode");
 	$abort="NO";
 	$resnum=-1;
@@ -142,7 +143,7 @@ sub error {
 # tet_output - print a line to the execution results file
 sub output {
 	local($_);
-	
+
 	#ensure no newline chars in data & line<512
 	local($arg1,$arg2,$arg3)=@_;
 	local($sp);
@@ -157,12 +158,12 @@ sub output {
 		$mess=
 			sprintf("warning: results file line truncated: prefix: %d|%s%s%s|",
 			$arg1,$activity,$sp,$arg2,$arg3);
-		$l=1;			
+		$l=1;
 	}
 	printf($JOURNAL_HANDLE "%.511s\n",$_);
 
 	if ($l) { &error($mess);}
-	
+
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -219,7 +220,7 @@ sub test_info {
 
 sub test_header {
     my $login=getpwuid($<);
-    my $id_string = "0|3.7-lite " . &tet::test_time . "|User: " . $login . " , Command line: " . $0 . " " . $fullargs . "\n"; 
+    my $id_string = "0|3.7-lite " . &tet::test_time . "|User: " . $login . " , Command line: " . $0 . " " . $fullargs . "\n";
     printf($JOURNAL_HANDLE $id_string);
     my $uname = `uname -snrvm`;
     chomp $uname;
@@ -258,21 +259,30 @@ sub file_info {
 }
 
 sub show_usage() {
-    print "Usage $0   
-    [-j|--journal] 
-    [-v|--version=N.N (LSB version to test for, default is $lsb_version)] 
+    print "Usage $0
+    [-j|--journal]
+    [-v|--version=N.N (LSB version to test for, default is $lsb_version)]
     [-L|--lanana=<LANANA name> (will search /opt/LANANA for private modules)]
-    [-m|--modpath=<additional comma seperated path(s) 
+    [-m|--modpath=<additional comma seperated path(s)
                     to search for private modules>]
-    [-?|--help (this message)] 
+    [-?|--help (this message)]
     [filename(s)]\n";
     exit(1);
 }
 
 sub file_exists() {
-    if ($_ eq $searchfile) {
+    if ($File::Find::name =~ m/\/$searchfile$/) {
         $searchfound = $File::Find::name if -f;
     }
+}
+
+sub is_mod_in_list($$) {
+	my ($mod, $arr) = @_;
+	foreach (@$arr) {
+		return "./$_" if ($_ eq $mod);
+		return $_ if ($_ =~ m/\/$mod$/);
+	}
+	return undef;
 }
 
 sub check_private_path {
@@ -280,27 +290,29 @@ sub check_private_path {
     my $modulefile;
     for my $ext (".pl", ".pm") {
         $modulefile = $modulename . $ext;
-        if (-f $modulefile) {
-            return "./" . $modulefile;
-        } 
+        $modulefile =~ s/::/\//g;       # Transform Some::Mod.pm => Some/Mod.pm
+        if (my $path = is_mod_in_list($modulefile, \@input_files)) {
+            return $path;
+        }
         $searchfound = "";
         if ($lanana) {
             $full_path = "/opt/" . $lanana;
-            $searchfile = $modulefile; 
+            $searchfile = $modulefile;
             die "directory $full_path does not exist..." if !(-d $full_path);
             find(\&file_exists, $full_path);
             return $searchfound if $searchfound ne "";
-        }        
+        }
         if ($modpath) {
             my @modpaths = split(",", $modpath);
             foreach (@modpaths) {
                 die "directory $_ does not exist..." if !(-d $_);
             }
-            $searchfile = $modulefile; 
+            $searchfile = $modulefile;
             find(\&file_exists, @modpaths);
             return $searchfound if $searchfound ne "";
         }
     }
+    return '';
 }
 
 # main routine
@@ -324,7 +336,8 @@ if ($lsb_version < 1.0 or $lsb_version > 20) {
     die "Invalid LSB version: $lsb_version";
 }
 
-for my $file (grep /^[^-]/, @ARGV) {
+@input_files = grep /^[^-]/, @ARGV;
+for my $file (@input_files) {
     my $deps = new DependencyParser;
     $deps->process_file($file);
     print "$file tested against LSB $lsb_version:\n";
@@ -352,7 +365,7 @@ for my $file (grep /^[^-]/, @ARGV) {
     test_result($tnum, "PASS") if $journal;
     test_end($tnum) if $journal;
     my $verbage = "is used, but is not part of LSB";
-    my $localpath = "is used, but loaded from a non-standard location";
+    my $localpathmsg = "is used, but loaded from a non-standard location";
     my $vermsg = "but LSB specifies " . $perl_version . " as a baseline";
     my $appearedmsg = "did not appear until LSB ";
     my $withdrawnmsg = "was withdrawn in LSB ";
@@ -367,14 +380,14 @@ for my $file (grep /^[^-]/, @ARGV) {
         if ($found) {
             if ($lsb_version < $appeared) {
                 $appearedmsg = $module . ' ' . $appearedmsg;
-                printf("  %s%s\n", $appearedmsg, $appeared);  
+                printf("  %s%s\n", $appearedmsg, $appeared);
                 if ($journal) {
                     test_info($tnum, $appearedmsg . $appeared);
                     test_result($tnum, "FAIL");
                 }
             } elsif ($lsb_version > $withdrawn and $withdrawn ne 'NULL') {
                 $withdrawnmsg = $module . ' ' . $withdrawnmsg;
-                printf("  %s%s\n", $withdrawnmsg, $withdrawn);  
+                printf("  %s%s\n", $withdrawnmsg, $withdrawn);
                 if ($journal) {
                     test_info($tnum, $withdrawnmsg . $withdrawn);
                     test_result($tnum, "FAIL");
@@ -405,9 +418,9 @@ for my $file (grep /^[^-]/, @ARGV) {
             } else {
                 my $modulefile = check_private_path($req->value,$lanana,$modpath);
                 if ($modulefile) {
-                    printf "  %s %s: %s\n", $req->value, $localpath, $modulefile;
+                    printf "  %s %s: %s\n", $req->value, $localpathmsg, $modulefile;
                     if ($journal) {
-                        test_info($tnum, $req->value . " " . $localpath . ": " . $modulefile);
+                        test_info($tnum, $req->value . " " . $localpathmsg . ": " . $modulefile);
                         test_result($tnum, "PASS");
                     }
                 } else {
@@ -424,5 +437,3 @@ for my $file (grep /^[^-]/, @ARGV) {
     test_footer();
     close JHNDL if $journal;
 }
-
-
