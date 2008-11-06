@@ -17,20 +17,26 @@ our $searchfound = "";
 our $searchfile = "";
 package tet;
 
-use Getopt::Long;
+use Getopt::Long qw(:config no_ignore_case);
 use File::Basename;
 use File::Find;
 
 our $JOURNAL_HANDLE;
 my $journal = '';
 my $lsb_version = "4.0";
+my $lanana = '';
+my $modpath = '';
+my $list_files = '';
+my $verbose_mode = 0;
 # @ARGV get's clobbered somewhere
 my $fullargs = join(' ', @ARGV);
 my @input_files;
 my $options = GetOptions("journal" => \$journal,
-                        "version=s" => \$lsb_version,
-                        "lanana=s" => \$lanana,
+                        "v|version=s" => \$lsb_version,
+                        "L|lanana=s" => \$lanana,
                         "modpath=s" => \$modpath,
+                        "l|list=s" => \$list_files,
+                        "verbose" => \$verbose_mode,
                         "help|?" => sub { show_usage() });
 
 our @TET_CODE_FILE=("0   PASS        Continue\n",
@@ -241,6 +247,7 @@ sub test_footer {
     &output(80, "0 $time", "TC End") if $journal;
     $activity=$time;
     &output(900, "", "TCC End") if $journal;
+    $activity=0;
 }
 
 sub file_info {
@@ -265,6 +272,7 @@ sub show_usage() {
     [-L|--lanana=<LANANA name> (will search /opt/LANANA for private modules)]
     [-m|--modpath=<additional comma seperated path(s)
                     to search for private modules>]
+    [-l|--list=<file containing list of files to test>]
     [-?|--help (this message)]
     [filename(s)]\n";
     exit(1);
@@ -317,7 +325,7 @@ sub check_private_path {
 
 # main routine
 my $argc = @ARGV;
-show_usage if $argc == 0;
+show_usage if ($argc == 0) && (!$list_files);
 
 # read the list of LSB modules
 my $mlistf = "$basedir/lsb-perl-modules.list";
@@ -337,13 +345,39 @@ if ($lsb_version < 1.0 or $lsb_version > 20) {
 }
 
 @input_files = grep /^[^-]/, @ARGV;
-for my $file (@input_files) {
+my %journals = ();
+
+# Read list of files
+if ($list_files) {
+	my $file_contents;
+	open(FLIST, $list_files) or die "Could not open file $list_files:\n$!\n";
+	read(FLIST, $file_contents, -s $list_files);
+	close(FLIST);
+	my $file_path;
+	my $journal_path;
+	foreach my $line (split(/[\r\n]+/, $file_contents)) {
+		# Each line is either file or file<TAB>journal
+		if ($line =~ m/^([^\t]+)\t([^\t]+)$/) {
+			$file_path = $1;
+			$journals{$file_path} = $2;
+		}
+		else {
+			$file_path = $line;
+		}
+		push @input_files, $file_path;
+	}
+}
+
+foreach my $file (@input_files) {
+    next if ($file eq '');
+    print "TESTING: $file\n" if ($verbose_mode);
     my $deps = new DependencyParser;
     $deps->process_file($file);
     print "$file tested against LSB $lsb_version:\n";
 
     if ($journal) {
-        my $journal_path="journal." . basename($0) . "." . basename($file);
+        # If journal path/name was specified in the list use it, else construct from filename
+        my $journal_path = ($journals{$file} || "journal." . basename($0) . "." . basename($file));
         unlink($journal_path);
         if (open(JHNDL,">>$journal_path")) {
             $JOURNAL_HANDLE = JHNDL;
@@ -353,7 +387,7 @@ for my $file (@input_files) {
 
         test_header();
         my $time=&time;
-        tet::output(10, "$file $time", "TC Start") if $journal;
+        &output(10, "$file $time", "TC Start") if $journal;
         &output(15, "tetj-1.0 1", "TCM Start") if $journal;
     }
 
