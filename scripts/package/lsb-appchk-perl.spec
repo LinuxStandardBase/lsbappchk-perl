@@ -17,7 +17,6 @@ URL: http://www.linuxbase.org/test
 BuildRoot: %{_tmppath}/%{name}-root
 AutoReqProv: no
 BuildArch: noarch
-Requires: lsb-tet3-lite
 
 %description
 This is the official package version of the LSB Perl Application Test. 
