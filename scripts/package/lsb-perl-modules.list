@@ -80,11 +80,6 @@ Exporter	3.2	NULL
 Exporter::Heavy	3.2	NULL
 ExtUtils::Command	3.2	NULL
 ExtUtils::Command::MM	3.2	NULL
-ExtUtils::Constant	3.2	NULL
-ExtUtils::Constant::Base	3.2	NULL
-ExtUtils::Constant::Utils	3.2	NULL
-ExtUtils::Constant::XS	3.2	NULL
-ExtUtils::Embed	3.2	NULL
 ExtUtils::Install	3.2	NULL
 ExtUtils::Installed	3.2	NULL
 ExtUtils::Liblist	3.2	NULL
@@ -240,7 +235,6 @@ Symbol	3.2	NULL
 Sys::Hostname	3.2	NULL
 Sys::Syslog	3.2	NULL
 Term::ANSIColor	3.2	NULL
-Term::Cap	3.2	NULL
 Term::Complete	3.2	NULL
 Term::ReadLine	3.2	NULL
 Test	3.2	NULL
