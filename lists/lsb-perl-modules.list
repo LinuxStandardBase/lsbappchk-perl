@@ -76,11 +76,6 @@ Exporter
 Exporter::Heavy
 ExtUtils::Command
 ExtUtils::Command::MM
-ExtUtils::Constant
-ExtUtils::Constant::Base
-ExtUtils::Constant::Utils
-ExtUtils::Constant::XS
-ExtUtils::Embed
 ExtUtils::Install
 ExtUtils::Installed
 ExtUtils::Liblist
@@ -260,7 +255,6 @@ Symbol
 Sys::Hostname
 Sys::Syslog
 Term::ANSIColor
-Term::Cap
 Term::Complete
 Term::ReadLine
 Test
