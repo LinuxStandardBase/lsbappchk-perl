@@ -76,26 +76,29 @@ Exporter
 Exporter::Heavy
 ExtUtils::Command
 ExtUtils::Command::MM
-ExtUtils::Constant
-ExtUtils::Constant::Base
-ExtUtils::Constant::Utils
-ExtUtils::Constant::XS
-ExtUtils::Embed
+# next 5 dropped for bug 2430
+#ExtUtils::Constant
+#ExtUtils::Constant::Base
+#ExtUtils::Constant::Utils
+#ExtUtils::Constant::XS
+#ExtUtils::Embed
 ExtUtils::Install
 ExtUtils::Installed
 ExtUtils::Liblist
 ExtUtils::Liblist::Kid
-ExtUtils::MM_AIX
-ExtUtils::MM_Any
-ExtUtils::MM_BeOS
-ExtUtils::MM_DOS
-ExtUtils::MM_MacOS
-ExtUtils::MM_NW5
-ExtUtils::MM_OS2
-ExtUtils::MM_QNX
+# ExtUtils::MM* changes for bug 2453; ExtUtils::MakeMaker added
+#ExtUtils::MM_AIX
+#ExtUtils::MM_Any
+#ExtUtils::MM_BeOS
+#ExtUtils::MM_DOS
+#ExtUtils::MM_MacOS
+#ExtUtils::MM_NW5
+#ExtUtils::MM_OS2
+#ExtUtils::MM_QNX
 ExtUtils::MM_Unix
-ExtUtils::MM_VOS
-ExtUtils::MY
+#ExtUtils::MM_VOS
+#ExtUtils::MY
+ExtUtils::MakeMaker
 ExtUtils::MakeMaker::Config
 ExtUtils::MakeMaker::bytes
 ExtUtils::Manifest
@@ -113,10 +116,12 @@ File::DosGlob
 File::Find
 File::Glob
 File::Path
-File::Spec::Epoc
+# File::Spec changes for bug 2453; ExtUtils::Spec itself added
+File::Spec
+#File::Spec::Epoc
 File::Spec::Functions
-File::Spec::Mac
-File::Spec::OS2
+#File::Spec::Mac
+#File::Spec::OS2
 File::Spec::Unix
 File::Temp
 File::stat
@@ -260,7 +265,8 @@ Symbol
 Sys::Hostname
 Sys::Syslog
 Term::ANSIColor
-Term::Cap
+# dropped for bug 2452
+#Term::Cap
 Term::Complete
 Term::ReadLine
 Test
