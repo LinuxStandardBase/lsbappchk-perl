@@ -3,7 +3,7 @@
 # VERSION, RELEASE and LSB_VERSION get used by the spec file
 PACKAGE=lsb-appchk-perl
 VERSION=3.97.0
-RELEASE=3
+RELEASE=4
 # default version we will test against - change as needed
 LSB_VERSION=4.0
 

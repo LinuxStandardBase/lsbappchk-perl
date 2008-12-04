@@ -1,5 +1,6 @@
-select ILMname, ILMappearedin, ILMwithdrawnin from InterpretedLanguageModule 
-where ILMlanguage in (select ILid from InterpretedLanguage 
-where ILname = 'Perl')
-and ILMappearedin <>'' and ILMappearedin <= '3.2'
-and (ILMwithdrawnin is NULL or ILMwithdrawnin > '3.2')
+SELECT ILMname,ILMappearedin,ILMwithdrawnin FROM InterpretedLanguageModule 
+WHERE ILMlanguage IN (SELECT ILid FROM InterpretedLanguage 
+WHERE ILname = 'Perl')
+AND ILMappearedin <>'' AND ILMappearedin <= '3.2'
+AND (ILMwithdrawnin IS NULL OR ILMwithdrawnin > '3.2')
+ORDER BY ILMname
