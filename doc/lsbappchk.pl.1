@@ -1,0 +1,45 @@
+.TH lsbappchk.pl "1" "" "lsbappchk.pl (LSB)" LSB
+.SH NAME
+lsbappchk.pl \- test perl script(s) for LSB conformance
+.SH SYNOPSIS
+.B lsbappchk.pl
+.RB [\-j]
+.RB [\-v 
+.IR N.N ]
+.RB [\-L 
+.IR <LANANA-name>]
+.RB [\-m 
+.IR <module-path(s)>]
+.RB [\-l
+.IR <listfile>]
+.RB [\-?|\-h 
+.R (this message)
+.RB ]
+.B [filename(s)]
+.SH DESCRIPTION
+.PP
+lsbappchk.pl examines perl script(s) for conformance with the LSB specification. Any modules called by the perl script that are not defined in LSB or included in the script's packaging shall be tagged as failures.
+.SH OPTIONS
+.TP
+.I \-j
+Create a tet style journal suitable for LSB certification submission. The journal file(s) will be named journal.appchk.appname, where appname is the perl script(s) specified on the command line (or from the list file).
+.TP
+.I \-v
+LSB version to test for, in N.N format. Default will be the current LSB version (4.0 at the time of this writing).
+.TP
+.I \-L
+LANANA name to use to search for private modules. The LSB specifies that a package will be installed in /opt/LANANA-name. lsbappchk.pl will search this directory for called modules when testing the script.
+.TP
+.I \-m
+A comma-seperated list of additional path(s) to search for private modules. Useful if testing a script that is not yet installed in /opt/LANANA-name.
+.TP
+.I \-l
+Text file containing a list of perl scripts to test.
+.TP
+.I \-?|\-h
+Lists program command line options.
+.SH AUTHORS
+.PP
+Stew Benedict <stewb@linuxfoundation.org>
+.P
+Konstantin Vlasov <flint@spidey.linux-foundation.org>

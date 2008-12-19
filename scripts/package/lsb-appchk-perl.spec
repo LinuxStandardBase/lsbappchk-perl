@@ -56,6 +56,10 @@ install -d ${RPM_BUILD_ROOT}%{basedir}/doc/%{name}
 cp %{SOURCE2} ${RPM_BUILD_ROOT}%{basedir}/doc/%{name}
 cp source/COPYING ${RPM_BUILD_ROOT}%{basedir}/doc/%{name}
 
+# man page
+install -d ${RPM_BUILD_ROOT}%{basedir}/man/man1
+cp doc/lsbappchk.pl.1 ${RPM_BUILD_ROOT}%{basedir}/man/man1
+
 #==================================================
 %clean
 if [ ! -z "${RPM_BUILD_ROOT}"  -a "${RPM_BUILD_ROOT}" != "/" ]; then 
@@ -71,9 +75,13 @@ fi
 /opt/lsb/share/appchk/*
 %dir /opt/lsb/doc/%{name}
 /opt/lsb/doc/%{name}/*
+/opt/lsb/man/man1/lsbappchk.pl.1
 
 #==================================================
 %changelog
+* Fri Dec 19 2008 Stew Benedict <stewb@linux-foundation.org>
+- add manpage
+
 * Wed Jul 02 2008 Stew Benedict <stewb@linux-foundation.org>
 - lose /opt/lsb/lib to co-exist with new multiversion sdk
 
