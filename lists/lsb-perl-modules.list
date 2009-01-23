@@ -260,8 +260,9 @@ SelfLoader
 Shell
 Socket
 Storable
-Switch
-Symbol
+# dropped for bug 2512
+#Switch
+#Symbol
 Sys::Hostname
 Sys::Syslog
 Term::ANSIColor
@@ -269,16 +270,18 @@ Term::ANSIColor
 #Term::Cap
 Term::Complete
 Term::ReadLine
-Test
+# dropped for bug 2512
+#Test
 Test::Builder
 Test::Builder::Module
 Test::Builder::Tester
 Test::Builder::Tester::Color
 Test::Harness
-Test::Harness::Assert
-Test::Harness::Iterator
-Test::Harness::Point
-Test::Harness::Straps
+# dropped for bug 2512
+#Test::Harness::Assert
+#Test::Harness::Iterator
+#Test::Harness::Point
+#Test::Harness::Straps
 Test::More
 Test::Simple
 Text::Abbrev
@@ -300,7 +303,8 @@ Time::Local
 Time::gmtime
 Time::localtime
 Time::tm
-UNIVERSAL
+# dropped for bug 2512
+#UNIVERSAL
 Unicode::Collate
 Unicode::Normalize
 Unicode::UCD
