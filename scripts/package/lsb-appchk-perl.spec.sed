@@ -1,6 +1,7 @@
-# %{ver}, %{rel} are provided by the Makefile
+# %{ver}, %{rel}, %{lsbversion} are provided by the Makefile
 %define ver @VERSION@
 %define rel @RELEASE@
+%define lsbversion @LSBVERSION@ 
 %define basedir /opt/lsb
 
 Summary: LSB Perl Application Checker
@@ -34,8 +35,11 @@ by Chip Turner <cturner@redhat.com>.
 cp %{SOURCE1} .
 patch -p0 -b -z .lsb-usage < %{PATCH0}
 patch -p0 -b -z .bug-2006 < %{PATCH1}
+
 # (sb) set the default version we'll test against (from the Makefile)
 sed -i 's|my $lsb_version = "4.0"|my $lsb_version = "%{lsbversion}"|g' source/lsbappchk.pl
+# (sb) and the application version
+sed -i 's|@BUILDVERSION@|%{ver}|g' source/lsbappchk.pl
 
 #==================================================
 %install

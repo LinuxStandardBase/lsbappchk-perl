@@ -6,7 +6,7 @@
 
 # tet stuff blows up with strict
 #use strict;
-our $VERSION = "lsbappchk.pl 0.3 (noarch)";
+our $VERSION = "lsbappchk.pl @BUILDVERSION@ (noarch)";
 use FindBin;
 our $basedir = $FindBin::Bin;       # /opt/lsb/bin
 $basedir =~ s!/bin$!/share/appchk!; # /opt/lsb/share/appchk
