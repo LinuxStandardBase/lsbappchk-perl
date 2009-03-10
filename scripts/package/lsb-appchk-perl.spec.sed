@@ -1,8 +1,11 @@
+# %{ver}, %{rel} are provided by the Makefile
+%define ver @VERSION@
+%define rel @RELEASE@
 %define basedir /opt/lsb
-# %{version}, %{rel} are provided by the Makefile
+
 Summary: LSB Perl Application Checker
 Name: lsb-appchk-perl
-Version: %{version}
+Version: %{ver}
 Release: %{rel}
 License: GPL
 Group: Development/Tools
@@ -13,7 +16,6 @@ Source3: lsb-perl-modules.list
 Patch0: perldeps-patch-for-lsb.patch
 Patch1: perldeps-bug-2006.patch
 URL: http://www.linuxbase.org/test
-#Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-root
 AutoReqProv: no
 BuildArch: noarch

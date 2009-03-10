@@ -3,7 +3,7 @@
 # VERSION, RELEASE and LSB_VERSION get used by the spec file
 PACKAGE=lsb-appchk-perl
 VERSION=4.0.1
-RELEASE=1
+RELEASE=2
 # default version we will test against - change as needed
 LSB_VERSION=4.0
 
@@ -70,12 +70,16 @@ all: rpm_package
 endif
 
 clean:
-	@rm -f *.rpm *.deb *.tar.gz *perldeps.pl 
+	@rm -f *.rpm *.deb *.tar.gz *perldeps.pl $(PACKAGE).spec 
 
 gensrc:
 	mysql $(DBOPTS) $$LSBDB < get_perl_modules.sql > $(MODULE_LIST)
 
 tarball: $(MODULE_LIST) $(SOURCE1) $(SOURCE2)
+
+# Specfile generation rule
+%.spec : %.spec.sed
+	sed -e "s#@VERSION@#`echo $(VERSION)`#" -e "s#@RELEASE@#`echo $(RELEASE)`#" < $< > $@
 
 deb_package: rpm_package
 	@fakeroot alien -cdk $(RPM_BINARY_NAME)
