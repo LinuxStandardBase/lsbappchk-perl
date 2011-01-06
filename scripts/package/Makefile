@@ -3,9 +3,9 @@
 # VERSION, RELEASE and LSB_VERSION get used by the spec file
 PACKAGE=lsb-appchk-perl
 VERSION=4.0.1
-RELEASE=2
+RELEASE=3
 # default version we will test against - change as needed
-LSBVERSION=4.0
+LSBVERSION=4.1
 
 # for getting the module list from the lsb db
 DBOPTS=-N -h $$LSBDBHOST -u $$LSBUSER --password=$$LSBDBPASSWD
@@ -70,7 +70,7 @@ all: rpm_package
 endif
 
 clean:
-	@rm -f *.rpm *.deb *.tar.gz *perldeps.pl $(PACKAGE).spec 
+	@rm -f *.rpm *.deb *.tar.gz $(PACKAGE).spec 
 
 gensrc:
 	mysql $(DBOPTS) $$LSBDB < get_perl_modules.sql > $(MODULE_LIST)
