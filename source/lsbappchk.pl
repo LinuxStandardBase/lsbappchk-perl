@@ -398,6 +398,8 @@ foreach my $file (@input_files) {
     file_info($file) if $journal;
     test_result($tnum, "PASS") if $journal;
     test_end($tnum) if $journal;
+    # default is PASS, we'll change if there's a problem in checking
+    my $tresult = "PASS";
     my $verbage = "is used, but is not part of LSB";
     my $localpathmsg = "is used, but loaded from a non-standard location";
     my $vermsg = "but LSB specifies " . $perl_version . " as a baseline";
@@ -405,39 +407,43 @@ foreach my $file (@input_files) {
     my $withdrawnmsg = "was withdrawn in LSB ";
     my $deprecatedmsg = "was deprecated in LSB ";
     for my $req ($deps->requires) {
+        my $infomsg = "";
         $tnum++;
         my $value = $req->value;
         test_start($tnum) if $journal;
         tp_start($tnum, "Check $value") if $journal;
         my @match = grep { /^$value/ } @mlist;
         my ($module, $appeared, $withdrawn, $deprecated) = split(' ', $match[0]);
+        #print "$match[0]\n";
         my $found = @match;
         if ($found) {
             if ($lsb_version < $appeared) {
-                $appearedmsg = $module . ' ' . $appearedmsg;
-                printf("  %s%s\n", $appearedmsg, $appeared);
+                $infomsg = $module . ' ' . $appearedmsg;
+                printf("  %s%s\n", $infomsg, $appeared);
                 if ($journal) {
-                    test_info($tnum, $appearedmsg . $appeared);
-                    test_result($tnum, "FAIL");
+                    test_info($tnum, $infomsg . $appeared);
+                    $tresult = "FAIL";
                 }
-            } elsif ($lsb_version > $withdrawn and $withdrawn ne 'NULL') {
-                $withdrawnmsg = $module . ' ' . $withdrawnmsg;
-                printf("  %s%s\n", $withdrawnmsg, $withdrawn);
+                break;
+            } 
+            if ($lsb_version >= $deprecated and $deprecated ne 'NULL') {
+                $infomsg = $module . ' ' . $deprecatedmsg;
+                printf("  %s%s\n", $infomsg, $deprecated);
                 if ($journal) {
-                    test_info($tnum, $withdrawnmsg . $withdrawn);
-                    test_result($tnum, "FAIL");
-                }
-            } elsif ($lsb_version >= $appeared and $deprecated ne 'NULL' and $deprecated <= $lsb_version) {
-                $deprecatedmsg = $module . ' ' . $deprecatedmsg;
-                printf("  %s%s\n", $deprecatedmsg, $deprecated);
-                if ($journal) {
-                    test_info($tnum, $deprecatedmsg . $deprecated);
-                    test_result($tnum, "WARNING");
+                    test_info($tnum, $infomsg . $deprecated);
+                    $tresult = "WARNING";
                 }            
-            } else {
+            }
+            if ($lsb_version >= $withdrawn and $withdrawn ne 'NULL') {
+                $infomsg = $module . ' ' . $withdrawnmsg;
+                printf("  %s%s\n", $infomsg, $withdrawn);
                 if ($journal) {
-                    test_result($tnum, "PASS");
+                    test_info($tnum, $infomsg . $withdrawn);
+                    $tresult = "FAIL";
                 }
+            } 
+            if ($journal) {
+                test_result($tnum, $tresult);
             }
         } else {
             if ($req->type eq 'perl version') {
