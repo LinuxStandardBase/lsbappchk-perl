@@ -85,6 +85,9 @@ fi
 
 #==================================================
 %changelog
+* Fri Jan 07 2011 Stew Benedict <stewb@linux-foundation.org>
+- handle deprecated modules (bug 3096)
+
 * Fri Dec 19 2008 Stew Benedict <stewb@linux-foundation.org>
 - add manpage
 

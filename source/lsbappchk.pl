@@ -403,13 +403,14 @@ foreach my $file (@input_files) {
     my $vermsg = "but LSB specifies " . $perl_version . " as a baseline";
     my $appearedmsg = "did not appear until LSB ";
     my $withdrawnmsg = "was withdrawn in LSB ";
+    my $deprecatedmsg = "was deprecated in LSB ";
     for my $req ($deps->requires) {
         $tnum++;
         my $value = $req->value;
         test_start($tnum) if $journal;
         tp_start($tnum, "Check $value") if $journal;
         my @match = grep { /^$value/ } @mlist;
-        my ($module, $appeared, $withdrawn) = split(' ', $match[0]);
+        my ($module, $appeared, $withdrawn, $deprecated) = split(' ', $match[0]);
         my $found = @match;
         if ($found) {
             if ($lsb_version < $appeared) {
@@ -426,6 +427,13 @@ foreach my $file (@input_files) {
                     test_info($tnum, $withdrawnmsg . $withdrawn);
                     test_result($tnum, "FAIL");
                 }
+            } elsif ($lsb_version >= $appeared and $deprecated ne 'NULL' and $deprecated <= $lsb_version) {
+                $deprecatedmsg = $module . ' ' . $deprecatedmsg;
+                printf("  %s%s\n", $deprecatedmsg, $deprecated);
+                if ($journal) {
+                    test_info($tnum, $deprecatedmsg . $deprecated);
+                    test_result($tnum, "WARNING");
+                }            
             } else {
                 if ($journal) {
                     test_result($tnum, "PASS");
