@@ -3,7 +3,7 @@
 # VERSION, RELEASE and LSB_VERSION get used by the spec file
 PACKAGE=lsb-appchk-perl
 VERSION=4.1.0
-RELEASE=1
+RELEASE=2
 # default version we will test against - change as needed
 LSBVERSION=4.1
 
@@ -109,7 +109,7 @@ $(SOURCE1):
 	bzr export $(SOURCE1) $(BZRTREES)/$(BZR_MODULE)
 
 $(SOURCE2):
-	wget -Operldeps.pl 'http://rpm5.org/cvs/getfile?f=rpm/scripts/perldeps.pl&v=1.5'
-	wget -OCOPYING.perldeps.pl 'http://rpm5.org/cvs/getfile?f=rpm/COPYING&v=1.3'
+	cvs -d :pserver:anonymous@rpm5.org:/cvs co -p rpm/scripts/perldeps.pl > perldeps.pl
+	cvs -d :pserver:anonymous@rpm5.org:/cvs co -p rpm/COPYING > COPYING.perldeps.pl
 
 .PHONY : tarball rpm_package
