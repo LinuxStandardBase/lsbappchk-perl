@@ -2,10 +2,10 @@
 # XXX a specfile from this info, but not yet: for now keep in sync
 # VERSION, RELEASE and LSB_VERSION get used by the spec file
 PACKAGE=lsb-appchk-perl
-VERSION=4.1.0
-RELEASE=2
+VERSION=4.90.0
+RELEASE=1
 # default version we will test against - change as needed
-LSBVERSION=4.1
+LSBVERSION=5.0
 
 # for getting the module list from the lsb db
 DBOPTS=-N -h $$LSBDBHOST -u $$LSBUSER --password=$$LSBDBPASSWD
@@ -21,7 +21,7 @@ RPM_BINARY_NAME=$(FULL_PACKAGE_NAME)-$(RELEASE).$(RPM_BUILD_ARCH).rpm
 RPM_SOURCE_NAME=$(FULL_PACKAGE_NAME)-$(RELEASE).src.rpm
 
 SOURCE1 = $(PACKAGE)-$(VERSION).tar.gz
-SOURCE2 = perldeps.pl
+SOURCE2 = perldeps.pl COPYING.perldeps.pl
 MODULE_LIST = lsb-perl-modules.list
 
 # Temporary build directory
@@ -70,8 +70,13 @@ else
 all: rpm_package
 endif
 
+# note: we should clean $(SOURCE1), but after version is bumped,
+# that will match new version, so instead *.tar.gz is used to pick up either-
 clean:
-	@rm -f *.rpm *.deb *.tar.gz $(PACKAGE).spec 
+	rm -f *.rpm *.deb *.tar.gz $(PACKAGE).spec $(SOURCE2)
+
+distclean: clean
+	rm -f $(MODULE_LIST)
 
 gensrc:
 	mysql $(DBOPTS) $$LSBDB < get_perl_modules.sql > $(MODULE_LIST)

@@ -16,14 +16,14 @@ CGI::Carp	3.2	NULL	NULL
 CGI::Cookie	3.2	NULL	NULL
 CGI::Pretty	3.2	NULL	NULL
 CGI::Push	3.2	NULL	NULL
-CGI::Switch	3.2	NULL	4.1
+CGI::Switch	3.2	5.0	4.1
 CGI::Util	3.2	NULL	NULL
 CPAN	3.2	NULL	NULL
 CPAN::FirstTime	3.2	NULL	NULL
 CPAN::Nox	3.2	NULL	NULL
 Carp	3.2	NULL	NULL
 Carp::Heavy	3.2	NULL	NULL
-Class::ISA	3.2	NULL	4.1
+Class::ISA	3.2	5.0	4.1
 Class::Struct	3.2	NULL	NULL
 Cwd	3.2	NULL	NULL
 DB	3.2	NULL	NULL
@@ -33,7 +33,7 @@ DBM_Filter::int32	3.2	NULL	NULL
 DBM_Filter::null	3.2	NULL	NULL
 DBM_Filter::utf8	3.2	NULL	NULL
 Data::Dumper	3.2	NULL	NULL
-Devel::DProf	3.2	NULL	4.1
+Devel::DProf	3.2	5.0	4.1
 Devel::PPPort	3.2	NULL	NULL
 Devel::Peek	3.2	NULL	NULL
 Devel::SelfStubber	3.2	NULL	NULL
@@ -190,7 +190,7 @@ Pod::Perldoc::ToNroff	3.2	NULL	NULL
 Pod::Perldoc::ToPod	3.2	NULL	NULL
 Pod::Perldoc::ToText	3.2	NULL	NULL
 Pod::PlainText	3.2	NULL	NULL
-Pod::Plainer	3.2	NULL	4.1
+Pod::Plainer	3.2	5.0	4.1
 Pod::Select	3.2	NULL	NULL
 Pod::Text	3.2	NULL	NULL
 Pod::Text::Color	3.2	NULL	NULL
@@ -203,7 +203,7 @@ Scalar::Util	3.2	NULL	NULL
 Search::Dict	3.2	NULL	NULL
 SelectSaver	3.2	NULL	NULL
 SelfLoader	3.2	NULL	NULL
-Shell	3.2	NULL	4.1
+Shell	3.2	5.0	4.1
 Socket	3.2	NULL	NULL
 Storable	3.2	NULL	NULL
 Sys::Hostname	3.2	NULL	NULL
