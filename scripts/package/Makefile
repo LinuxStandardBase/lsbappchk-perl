@@ -3,7 +3,7 @@
 # VERSION, RELEASE and LSB_VERSION get used by the spec file
 PACKAGE=lsb-appchk-perl
 VERSION=4.90.0
-RELEASE=1
+BUILDNO=2
 # default version we will test against - change as needed
 LSBVERSION=5.0
 
@@ -31,9 +31,10 @@ TMP_BUILD_DIR=/tmp/$(FULL_PACKAGE_NAME)
 # OFFICIAL_RELEASE should be set to the tag to extract from CVS
 ifdef OFFICIAL_RELEASE
 # EXPORT_TAG should be set to the cvs tag to use
+RELEASE=$(BUILDNO)
 EXPORT_TAG=-r $(OFFICIAL_RELEASE)
 else
-RELEASE=0.$(ISO_DATE)
+RELEASE=0.$(ISO_DATE).$(BUILDNO)
 EXPORT_TAG=-D now
 endif
 
