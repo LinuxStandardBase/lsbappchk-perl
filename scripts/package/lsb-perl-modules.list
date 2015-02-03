@@ -129,7 +129,7 @@ IPC::Open3	3.2	NULL	NULL
 IPC::Semaphore	3.2	NULL	NULL
 IPC::SysV	3.2	NULL	NULL
 List::Util	3.2	NULL	NULL
-Locale::Constants	3.2	NULL	NULL
+Locale::Constants	3.2	5.0	NULL
 Locale::Country	3.2	NULL	NULL
 Locale::Currency	3.2	NULL	NULL
 Locale::Language	3.2	NULL	NULL
