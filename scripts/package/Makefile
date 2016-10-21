@@ -115,9 +115,9 @@ $(SOURCE1):
 	bzr export $(SOURCE1) $(BZRTREES)/$(BZR_MODULE)
 
 $(SOURCE2):
-	(cvs -d :pserver:anonymous@rpm5.org:/cvs co -p rpm/scripts/perldeps.pl ||
+	(cvs -d :pserver:anonymous@rpm5.org:/cvs co -p rpm/scripts/perldeps.pl || \
 	 wget -O - http://ftp.linuxbase.org/pub/lsb/test_suites/packages/perldeps.pl) > perldeps.pl
-	(cvs -d :pserver:anonymous@rpm5.org:/cvs co -p rpm/COPYING.LIB ||
+	(cvs -d :pserver:anonymous@rpm5.org:/cvs co -p rpm/COPYING.LIB || \
 	 wget -O - http://ftp.linuxbase.org/pub/lsb/test_suites/packages/COPYING.perldeps.pl) > COPYING.perldeps.pl
 
 .PHONY : tarball rpm_package
